@@ -13,6 +13,7 @@
 - [ ] FASE 1: `main/Kconfig.projbuild` — CONFIG_OTA_URL default su Sibilla
 
 ## 📋 Backlog
+- [ ] interfaccia web per configuratore build
 - [ ] FASE 3: Documentazione README.md
 - [ ] Display offset/calibrazione (verificare empiricamente)
 - [ ] ASR italiano su Sibilla (problema trascrizione in inglese)
