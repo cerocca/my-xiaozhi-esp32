@@ -3,7 +3,7 @@
 ## Progetto
 Firmware custom per **Spotpear ESP32-S3-1.28-BOX** (N16R8, display rotondo GC9A01 1.28").
 Basato su https://github.com/78/xiaozhi-esp32 — punta a server custom locale
-invece di xiaozhi.me. Toolchain: ESP-IDF 5.4+, Mac, terminale.
+invece di xiaozhi.me. Toolchain: ESP-IDF 5.5.2+, Mac, terminale.
 
 Build:
 ```bash
@@ -71,6 +71,23 @@ idf.py -p /dev/cu.usbserial-XXXX monitor
   non necessario.
 - **Board target**: ESP32-S3, chip N16R8 (16MB flash, 8MB PSRAM).
   Verificare che `sdkconfig.defaults.esp32s3` sia allineato.
+- **ESP-IDF versione minima 5.5.2**: ESP-IDF 5.4 non è compatibile.
+  Dopo aggiornamento a 5.5, reinstallare l'ambiente Python da terminale pulito:
+  ```bash
+  rm -rf ~/.espressif/python_env/idf5.4_py3.14_env
+  cd ~/esp/esp-idf && ./install.sh
+  ```
+- **Target ESP32-S3 non impostato automaticamente**: se `build/` non esiste o
+  contiene un target diverso, `idf.py build` usa `esp32` come default.
+  `scripts/build_firmware.py` gestisce questo automaticamente leggendo
+  `build/CMakeCache.txt` e lanciando `idf.py set-target esp32s3` se necessario.
+- **Bug `image_to_jpeg.h` con ESP-IDF 5.5**: la condizione originale
+  `#if defined(CONFIG_IDF_TARGET_ESP32P4) || defined(CONFIG_IDF_TARGET_ESP32S3)`
+  includeva `<linux/videodev2.h>` anche per S3, ma quell'header non esiste nel
+  toolchain S3 (appartiene al componente `esp_video` di P4 only).
+  Fix locale applicato: rimossa la clausola `|| defined(CONFIG_IDF_TARGET_ESP32S3)` —
+  S3 usa ora i `#define` manuali nel ramo `#else`.
+  File: `main/display/lvgl_display/jpg/image_to_jpeg.h`.
 
 ---
 
