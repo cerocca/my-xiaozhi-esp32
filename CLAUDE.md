@@ -158,6 +158,13 @@ idf.py menuconfig
 - FASE 2: `main/boards/sp-esp32-s3-1.28-box/config.h` + `sp-esp32-s3-1.28-box.cc` (se necessario)
 - FASE 3: `sdkconfig.defaults` (CONFIG_LANGUAGE_IT_IT)
 
+### ✅ Confronto con Spotpear ufficiale (Repo upstream)
+- **Repo 1 (tuo)** è più avanzato e robusto di Repo 2 (Spotpear wiki)
+- Differenze critiche mappate (GC9A01 registri, partition table, bug fixes)
+- **Conclusione**: Nessuna sincronizzazione da Spotpear necessaria
+- Il fork v2.2.4 è il punto di partenza migliore per Sibilla custom
+- Dettagli: vedere documento di confronto nella sessione precedente
+
 ### ⚠️ Gotcha scoperti
 - NVS key max 15 caratteri (confirmed: "ota_url" = 7, "websocket_url" = 14, OK)
 - Board config JSON è minimalista — logica vera è in config.h + .cc
