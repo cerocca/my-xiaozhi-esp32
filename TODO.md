@@ -11,6 +11,7 @@
 
 ## 🔄 In corso
 - [ ] FASE 1: `main/Kconfig.projbuild` — CONFIG_OTA_URL default su Sibilla
+- [ ] capire i sdkconfig.defaults sulla root del repo se possono essere rimossi
 
 ## 📋 Backlog
 - [ ] interfaccia web per configuratore build
