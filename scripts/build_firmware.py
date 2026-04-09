@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 build_firmware.py — Build xiaozhi-esp32 firmware in hardcoded or dynamic server mode.
 

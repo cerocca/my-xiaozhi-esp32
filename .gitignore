@@ -21,3 +21,4 @@ mmap_generate_*.h
 
 # Compiled firmware outputs (build_firmware.py)
 scripts/firmware_outputs/
+.claude/
