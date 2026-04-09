@@ -16,5 +16,8 @@
 - [ ] FASE 3: Documentazione README.md
 - [ ] Display offset/calibrazione (verificare empiricamente)
 - [ ] ASR italiano su Sibilla (problema trascrizione in inglese)
+- [ ] gestione pulsanti / sleep screen
+- [ ] gestione SD
+- [ ] implementazione immagini come Spotpear 
 - [ ] NVS override server URL (chiave da definire)
 - [ ] Secondo device (futuro)
