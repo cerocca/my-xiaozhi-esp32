@@ -88,6 +88,22 @@ idf.py -p /dev/cu.usbserial-XXXX monitor
   Fix locale applicato: rimossa la clausola `|| defined(CONFIG_IDF_TARGET_ESP32S3)` —
   S3 usa ora i `#define` manuali nel ramo `#else`.
   File: `main/display/lvgl_display/jpg/image_to_jpeg.h`.
+- **`python` vs `python3` su Mac**: su macOS `python` punta a Python 2.7 (system).
+  Usare sempre `python3` per lanciare gli script del progetto.
+  Comando corretto: `python3 scripts/build_firmware.py --mode hardcoded`
+
+---
+
+## Sibilla — Infrastruttura
+
+- **Host**: sibilla (IP fisso LAN: `192.168.1.69`)
+- **Deploy**: Docker container via docker-compose
+- **Directory**: `/home/ciru/xiaozhi-esp32-lightserver`
+- **Image**: `ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:server_latest`
+- **Container**: `xiaozhi-esp32-server`
+- **Porte**: `8000` (WebSocket `/xiaozhi/v1/`), `8003` (OTA `/xiaozhi/ota/`)
+- **Log**: `docker logs xiaozhi-esp32-server -f`
+- **Avvio**: `cd /home/ciru/xiaozhi-esp32-lightserver && docker compose up -d`
 
 ---
 
@@ -127,6 +143,12 @@ idf.py set-target esp32s3
 
 # Menuconfig (esplora opzioni sdkconfig)
 idf.py menuconfig
+
+# Build firmware con server hardcoded (Sibilla locale)
+python3 scripts/build_firmware.py --mode hardcoded
+
+# Build firmware con server dinamico (upstream default)
+python3 scripts/build_firmware.py --mode dynamic
 
 # Scrivere un valore NVS via monitor (per test override server)
 # Usare il menu di provisioning esistente o nvs_flash tool
