@@ -91,6 +91,13 @@ idf.py -p /dev/cu.usbserial-XXXX monitor
 - **`python` vs `python3` su Mac**: su macOS `python` punta a Python 2.7 (system).
   Usare sempre `python3` per lanciare gli script del progetto.
   Comando corretto: `python3 scripts/build_firmware.py --mode hardcoded`
+- **Board selection via Kconfig**: la board viene selezionata tramite `CONFIG_BOARD_TYPE_*`.
+  Il valore va impostato in `sdkconfig.defaults.esp32s3`. Senza questo, il build
+  sceglie `bread-compact-wifi` come default.
+- **Tag upstream in locale**: i tag upstream (`v1.x`, `v2.x`) non vanno pushati.
+  Per pulirli: `git tag | grep -v "custom" | xargs git tag -d`
+- **Versione firmware**: hardcodata in `CMakeLists.txt` alla riga
+  `set(PROJECT_VER "2.2.5")`. Non dipende da `git describe`.
 
 ---
 
@@ -218,6 +225,7 @@ python3 scripts/build_firmware.py --mode dynamic
 - [ ] **TODO.md** aggiornato (aggiungi/spunta task)
 - [ ] **CHANGELOG.md** aggiornato con le modifiche fatte
 - [ ] Verificare che `sdkconfig` non includa path locali da non committare
+- [ ] Verificare che `.claude/` non sia tracciato da git (`git status` non deve mostrarlo)
 - [ ] Solo dopo conferma utente: `git add` e `git commit`
 
 Formato commit: `feat:`, `fix:`, `docs:`, `refactor:` — ogni commit
