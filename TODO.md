@@ -25,3 +25,4 @@
 
 ### Futuro
 - [ ] **GitHub Actions**: build in cloud da WebUI → download binari compilati
+- [ ] **Cleanup repo**: rimuovere docs originali non più usati e sdkconfig.defaults per target non rilevanti (esp32, esp32c3, esp32c5, esp32c6, esp32p4)
