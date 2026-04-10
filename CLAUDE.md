@@ -104,6 +104,19 @@ idf.py -p /dev/cu.usbserial-XXXX monitor
   chiave "ota_url". ota.cc lo legge e sovrascrive CONFIG_OTA_URL (Kconfig).
   Se assente, usa il default compilato. Meccanismo completo, nessuna modifica
   necessaria. File: `managed_components/78__esp-wifi-connect/wifi_configuration_ap.cc`
+- **WebUI — porta 5001**: la WebUI Flask gira su porta 5001 (non 5000,
+  occupata da AirPlay Receiver su Mac). Script: `webui/Start WebUI.command`,
+  `webui/Stop WebUI.command`, `webui/Status WebUI.command`.
+- **SD card — pin noti, non implementata**: slot SD fisico presente sulla
+  board. Pin da Arduino Spotpear: CLK=17, CMD=18, D0=21, CS=13. Pattern
+  ESP-IDF disponibile in `main/boards/xingzhi-abs-2.0/`. Non implementata
+  nel firmware xiaozhi originale per questa board.
+- **Contributors GitHub**: il repo eredita tutti i contributor del repo
+  upstream 78/xiaozhi-esp32. Claude Code firma i commit con le credenziali
+  git locali dell'utente, non con identità propria.
+- **sdkconfig e sdkconfig.old**: già in `.gitignore`, non committare.
+  Solo `sdkconfig.defaults` e `sdkconfig.defaults.esp32s3` sono rilevanti
+  per questo progetto.
 
 ---
 
