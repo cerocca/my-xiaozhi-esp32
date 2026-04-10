@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>xiaozhi-esp32 — build configurator</title>
+  <style>
+    /* ── CSS variables (non definite nel mockup, necessarie per i var()) ── */
+    :root {
+      --font-sans: system-ui, -apple-system, sans-serif;
+      --font-mono: "SF Mono", "Fira Code", ui-monospace, monospace;
+
+      --color-text-primary:   #111827;
+      --color-text-secondary: #4b5563;
+      --color-text-tertiary:  #9ca3af;
+      --color-text-success:   #166534;
+      --color-text-warning:   #92400e;
+      --color-text-error:     #991b1b;
+
+      --color-background-primary:   #ffffff;
+      --color-background-secondary: #f3f4f6;
+      --color-background-success:   #dcfce7;
+      --color-background-warning:   #fef3c7;
+      --color-background-error:     #fee2e2;
+
+      --color-border-secondary: #d1d5db;
+      --color-border-tertiary:  #e5e7eb;
+
+      --border-radius-lg: 10px;
+      --border-radius-md: 6px;
+    }
+
+    /* ── Mockup CSS (copiato integralmente) ─────────────────────────────── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); }
+    .container { max-width: 560px; margin: 0 auto; padding: 1.5rem 1rem; }
+    .header { margin-bottom: 1.5rem; }
+    .header h1 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+    .header p { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+    .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+    .card-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-size: 13px; color: var(--color-text-secondary); margin-bottom: 4px; }
+    .field input, .field select { width: 100%; }
+    .field .hint { font-size: 11px; color: var(--color-text-tertiary); margin-top: 3px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); background: var(--color-background-success); color: var(--color-text-success); margin-left: 8px; vertical-align: middle; }
+    .badge-warn { background: var(--color-background-warning); color: var(--color-text-warning); }
+    .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 12px 0; }
+    .output-area { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; font-family: var(--font-mono); font-size: 12px; color: var(--color-text-secondary); min-height: 80px; }
+    .btn-row { display: flex; gap: 8px; margin-top: 1rem; }
+    .btn-primary { flex: 1; padding: 8px; font-size: 14px; font-weight: 500; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); cursor: pointer; color: var(--color-text-primary); }
+    .btn-secondary { padding: 8px 16px; font-size: 14px; background: transparent; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); cursor: pointer; color: var(--color-text-secondary); }
+    .status-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--color-text-tertiary); margin-top: 8px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-background-success); display: inline-block; }
+
+    /* ── Estensioni funzionali (non presenti nel mockup) ────────────────── */
+
+    /* Output con scroll e wrap per log lunghi */
+    .output-area {
+      max-height: 340px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* Varianti dot per stato build */
+    .dot-idle     { background: var(--color-border-secondary); }
+    .dot-building { background: #f59e0b; }
+    .dot-success  { background: var(--color-background-success);
+                    outline: 1.5px solid var(--color-text-success); }
+    .dot-error    { background: #ef4444; }
+
+    /* Pulsante disabilitato */
+    .btn-primary:disabled,
+    .btn-secondary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* Card download (nascosta finché non ci sono binari) */
+    .download-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .download-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 0.5px solid var(--color-border-tertiary);
+    }
+    .download-item:last-child { border-bottom: none; }
+    .download-item a {
+      font-size: 13px;
+      color: var(--color-text-primary);
+      text-decoration: none;
+      font-family: var(--font-mono);
+    }
+    .download-item a:hover { text-decoration: underline; }
+    .download-size {
+      font-size: 11px;
+      color: var(--color-text-tertiary);
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>xiaozhi-esp32 — build configurator</h1>
+    <p>Configura e compila il firmware per Spotpear ESP32-S3-1.28-BOX</p>
+  </div>
+
+  <!-- Card: Server -->
+  <div class="card">
+    <div class="card-title">Server</div>
+    <div class="field">
+      <label>Modalità</label>
+      <select id="mode">
+        <option value="dynamic">Dynamic — OTA URL configurabile via AP</option>
+        <option value="hardcoded">Hardcoded — IP server compilato nel firmware</option>
+      </select>
+    </div>
+    <div class="field" id="ip-field">
+      <label>OTA URL server <span class="badge badge-warn">solo hardcoded</span></label>
+      <input type="text" id="ip-input"
+             placeholder="http://192.168.1.69:8003/xiaozhi/ota/"
+             value="http://192.168.1.69:8003/xiaozhi/ota/"
+             disabled style="opacity:0.4;">
+      <div class="hint"><strong>Note</strong><ul style="margin:3px 0 0 16px;padding:0;"><li>Lascia vuoto per usare il default (tenclass.net)</li><li><u>Sintassi</u>: http://TUO_SERVER:8003/xiaozhi/ota/</li></ul></div>
+    </div>
+  </div>
+
+  <!-- Card: Firmware -->
+  <div class="card">
+    <div class="card-title">Firmware</div>
+    <div class="row">
+      <div class="field">
+        <label>Board</label>
+        <select disabled>
+          <option>Spotpear ESP32-S3-1.28-BOX</option>
+        </select>
+        <div class="hint">Fissa per ora</div>
+      </div>
+      <div class="field">
+        <label>Lingua</label>
+        <select id="language">
+          <!-- popolato da GET /languages -->
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Versione</label>
+      <input type="text" value="2.2.5" style="width:120px;" disabled>
+    </div>
+  </div>
+
+  <!-- Card: Output build -->
+  <div class="card">
+    <div class="card-title">Output build</div>
+    <div class="output-area" id="output">In attesa di avviare il build…</div>
+    <div class="status-row">
+      <span class="dot dot-idle" id="status-dot"></span>
+      <span id="status-text">Pronto</span>
+    </div>
+  </div>
+
+  <!-- Pulsanti principali -->
+  <div class="btn-row">
+    <button class="btn-primary" id="btn-build" onclick="avviaBuild()">▶ Avvia build</button>
+    <button class="btn-secondary" id="btn-download" onclick="aggiornaBinari()">⬇ Scarica binari</button>
+  </div>
+
+  <!-- Card: Download (nascosta finché non ci sono binari) -->
+  <div class="card" id="download-card" style="display:none; margin-top:1rem;">
+    <div class="card-title">Binari disponibili</div>
+    <div class="download-list" id="download-list"></div>
+  </div>
+
+</div>
+<script>
+"use strict";
+
+// ── Riferimenti DOM ───────────────────────────────────────────────────────
+
+const modeSelect  = document.getElementById("mode");
+const ipInput     = document.getElementById("ip-input");
+const output      = document.getElementById("output");
+const statusText  = document.getElementById("status-text");
+const statusDot   = document.getElementById("status-dot");
+const btnBuild    = document.getElementById("btn-build");
+const btnDownload = document.getElementById("btn-download");
+
+// ── Popolamento lingua ────────────────────────────────────────────────────
+
+const LANG_ORDER = [
+  "it-IT", "en-US", "es-ES", "de-DE", "fr-FR",
+  "pt-PT", "hi-IN", "pl-PL", "ru-RU", "zh-CN", "ja-JP", "ko-KR",
+];
+
+fetch("/languages")
+  .then(r => r.json())
+  .then(langs => {
+    const sel = document.getElementById("language");
+    sel.innerHTML = "";
+    const byCode = Object.fromEntries(langs.map(l => [l.code, l]));
+    const ordered = LANG_ORDER.map(code => byCode[code]).filter(Boolean);
+    ordered.forEach(l => {
+      const opt = document.createElement("option");
+      opt.value = l.code;
+      opt.textContent = l.name;
+      sel.appendChild(opt);
+    });
+    sel.value = "it-IT";
+  })
+  .catch(() => {
+    // fallback minimo se il server non risponde
+    const sel = document.getElementById("language");
+    sel.innerHTML = '<option value="it-IT">Italian</option>';
+  });
+
+// ── Toggle OTA URL in base alla modalità ──────────────────────────────────
+
+modeSelect.addEventListener("change", aggiornaModalita);
+
+function aggiornaModalita() {
+  const isHard = modeSelect.value === "hardcoded";
+  ipInput.disabled = !isHard;
+  ipInput.style.opacity = isHard ? "1" : "0.4";
+}
+
+// ── Helpers stato ─────────────────────────────────────────────────────────
+
+function setStato(stato, testo) {
+  statusDot.className = "dot dot-" + stato;
+  statusText.textContent = testo;
+}
+
+function appendLine(text) {
+  const atBottom = output.scrollHeight - output.clientHeight <= output.scrollTop + 5;
+  output.textContent += text + "\n";
+  if (atBottom) output.scrollTop = output.scrollHeight;
+}
+
+// ── Build ─────────────────────────────────────────────────────────────────
+
+let _eventSource = null;
+
+function avviaBuild() {
+  const mode     = modeSelect.value;
+  const otaUrl   = mode === "hardcoded" ? ipInput.value.trim() : "";
+  const language = document.getElementById("language").value;
+
+  // Reset UI
+  output.textContent = "";
+  setStato("building", "Build in corso…");
+  btnBuild.disabled    = true;
+  btnDownload.disabled = true;
+  document.getElementById("download-card").style.display = "none";
+
+  // Chiudi stream precedente se aperto
+  if (_eventSource) { _eventSource.close(); _eventSource = null; }
+
+  // Apri SSE *prima* del POST: la connessione è attiva quando il build thread
+  // inizia a produrre output, nessuna riga viene persa.
+  const source = new EventSource("/events");
+  _eventSource = source;
+
+  source.onopen = () => {
+    fetch("/build", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode, ota_url: otaUrl, language }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) {
+          appendLine("[ERROR] " + data.error);
+          setStato("error", "Errore");
+          btnBuild.disabled    = false;
+          btnDownload.disabled = false;
+          source.close();
+        }
+      })
+      .catch(err => {
+        appendLine("[ERROR] Impossibile contattare il server: " + err);
+        setStato("error", "Errore");
+        btnBuild.disabled    = false;
+        btnDownload.disabled = false;
+        source.close();
+      });
+  };
+
+  source.onmessage = e => {
+    let item;
+    try { item = JSON.parse(e.data); } catch { return; }
+
+    if (item.type === "log") {
+      appendLine(item.text);
+
+    } else if (item.type === "done") {
+      source.close();
+      btnBuild.disabled    = false;
+      btnDownload.disabled = false;
+      if (item.success) {
+        appendLine("\nBuild completato ✓");
+        setStato("success", "Build completato ✓");
+        aggiornaBinari();
+      } else {
+        appendLine("\nBuild fallito (exit code " + item.returncode + ")");
+        setStato("error", "Build fallito");
+      }
+
+    } else if (item.type === "error") {
+      source.close();
+      btnBuild.disabled    = false;
+      btnDownload.disabled = false;
+      appendLine("[ERROR] " + item.message);
+      setStato("error", "Errore");
+    }
+  };
+
+  source.onerror = () => {
+    if (source.readyState === EventSource.CLOSED) return;
+    appendLine("[webui] Connessione SSE interrotta.");
+    source.close();
+  };
+}
+
+// ── Download ──────────────────────────────────────────────────────────────
+
+function aggiornaBinari() {
+  fetch("/binaries")
+    .then(r => r.json())
+    .then(files => {
+      const card = document.getElementById("download-card");
+      const list = document.getElementById("download-list");
+      list.innerHTML = "";
+
+      if (!files.length) {
+        list.innerHTML = '<div style="font-size:12px;color:var(--color-text-tertiary)">Nessun binario disponibile — esegui prima il build.</div>';
+        card.style.display = "";
+        return;
+      }
+
+      files.forEach(f => {
+        const row = document.createElement("div");
+        row.className = "download-item";
+
+        const a = document.createElement("a");
+        a.href     = "/download/" + f.path;
+        a.download = f.name;
+        a.textContent = f.name;
+
+        const sz = document.createElement("span");
+        sz.className   = "download-size";
+        sz.textContent = fmtSize(f.size);
+
+        row.appendChild(a);
+        row.appendChild(sz);
+        list.appendChild(row);
+      });
+
+      card.style.display = "";
+    })
+    .catch(err => {
+      appendLine("[ERROR] Impossibile ottenere la lista binari: " + err);
+    });
+}
+
+function fmtSize(bytes) {
+  if (bytes < 1024)        return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+}
+</script>
+</body>
+</html>

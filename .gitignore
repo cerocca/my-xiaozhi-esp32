@@ -21,6 +21,10 @@ mmap_generate_*.h
 
 # Compiled firmware outputs (build_firmware.py)
 scripts/firmware_outputs/
+
+# WebUI runtime files
+webui/logs/*.log
+webui/logs/*.pid
 .claude/
 .DS_Store
 .AppleDouble

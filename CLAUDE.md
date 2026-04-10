@@ -98,6 +98,12 @@ idf.py -p /dev/cu.usbserial-XXXX monitor
   Per pulirli: `git tag | grep -v "custom" | xargs git tag -d`
 - **Versione firmware**: hardcodata in `CMakeLists.txt` alla riga
   `set(PROJECT_VER "2.2.5")`. Non dipende da `git describe`.
+- **Provisioning WiFi via AP — OTA URL già configurabile**: durante il
+  provisioning AP, il tab "Advanced" della pagina web del device permette
+  già di inserire un Custom OTA URL. Viene salvato in NVS namespace "wifi",
+  chiave "ota_url". ota.cc lo legge e sovrascrive CONFIG_OTA_URL (Kconfig).
+  Se assente, usa il default compilato. Meccanismo completo, nessuna modifica
+  necessaria. File: `managed_components/78__esp-wifi-connect/wifi_configuration_ap.cc`
 
 ---
 

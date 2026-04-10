@@ -8,6 +8,11 @@
 - Mappati pin SD card da sorgenti Arduino Spotpear: CLK=17, CMD=18, D0=21, CS=13
 - Identificati pattern di implementazione per volume e pulsanti nel repo upstream (`magiclick-2p5`, `doit-s3-aibox`, `xingzhi-abs-2.0`)
 - Verificato: SD card assente nel firmware Spotpear originale (ESP-IDF), presente solo nel progetto Arduino separato
+- Verificato provisioning WiFi via AP: campo OTA URL già presente nel tab Advanced (`wifi_configuration_ap.cc`), nessuna modifica necessaria
+
+### Aggiunto
+- WebUI completa in `webui/`: server Flask (porta 5001), interfaccia HTML con streaming SSE, script `Start/Stop/Status .command`, documentazione `README.md` e `SETUP.md`
+- `webui/logs/` aggiunto a `.gitignore`
 
 ## [v2.2.4-custom-0.2] — 2026-04-09
 ### Added
