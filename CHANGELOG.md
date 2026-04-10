@@ -1,5 +1,14 @@
 # Changelog — my-xiaozhi-esp32 custom
 
+## [session] — 2026-04-10
+### Analisi
+- Analisi sorgenti Spotpear originale e fork Arduino (`spotpear_original`, `spotpear_SDcard`)
+- Chiusa FASE 1 (`CONFIG_OTA_URL`): URL default in Kconfig è `tenclass.net` ma viene sovrascritto correttamente da `build_firmware.py --mode hardcoded`; nessuna modifica necessaria al sorgente
+- Check hardware completo: SD card, volume, power button, touch
+- Mappati pin SD card da sorgenti Arduino Spotpear: CLK=17, CMD=18, D0=21, CS=13
+- Identificati pattern di implementazione per volume e pulsanti nel repo upstream (`magiclick-2p5`, `doit-s3-aibox`, `xingzhi-abs-2.0`)
+- Verificato: SD card assente nel firmware Spotpear originale (ESP-IDF), presente solo nel progetto Arduino separato
+
 ## [v2.2.4-custom-0.2] — 2026-04-09
 ### Added
 - Board config `sp-esp32-s3-1.28-box` in `sdkconfig.defaults.esp32s3`
