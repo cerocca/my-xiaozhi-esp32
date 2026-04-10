@@ -82,6 +82,8 @@ python3 scripts/build_firmware.py --mode hardcoded
 python3 webui/server.py   # → http://localhost:5001
 ```
 
+For full setup instructions see [SETUP.md](SETUP.md)
+
 ---
 
 ## Based on

@@ -1,6 +1,10 @@
 # Changelog — my-xiaozhi-esp32 custom
 
 ## [session] — 2026-04-10
+### Aggiunto
+- `SETUP.md` con istruzioni di installazione da zero su macOS (ESP-IDF, clone, build, flash, first boot)
+- `README.md`: link a `SETUP.md` nella sezione Getting started; sostituzione immagini inline con `<img>` centrati; nuova sezione `## Images`; rimossi `README_ja.md` e `README_zh.md`; `README.md` originale rinominato in `README_original.md`
+
 ### Analisi
 - Analisi sorgenti Spotpear originale e fork Arduino (`spotpear_original`, `spotpear_SDcard`)
 - Chiusa FASE 1 (`CONFIG_OTA_URL`): URL default in Kconfig è `tenclass.net` ma viene sovrascritto correttamente da `build_firmware.py --mode hardcoded`; nessuna modifica necessaria al sorgente
