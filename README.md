@@ -1,8 +1,10 @@
-# my-xiaozhi-esp32
+# My xiaozhi esp32 firmware
 
-A fork of [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) customised for the **Spotpear ESP32-S3-1.28-BOX**, targeting a self-hosted local server instead of xiaozhi.me.
+A fork of [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) customised for the **Spotpear ESP32-S3-1.28-BOX**, targeting a custom server instead of xiaozhi.me.
 
 For the original xiaozhi-esp32 README see [README_original.md](README_original.md)
+
+See [SETUP.md](SETUP.md) for full installation instructions.
 
 ---
 
@@ -23,7 +25,7 @@ For the original xiaozhi-esp32 README see [README_original.md](README_original.m
 
 ## Architecture
 
-The firmware connects to **Sibilla**, a self-hosted local server, for both OTA updates and WebSocket communication. There is no dependency on xiaozhi.me or any external cloud service.
+The firmware connects to **your custom server** for both OTA updates and WebSocket communication. There is no dependency on xiaozhi.me or any external cloud service.
 
 The OTA URL can be configured in two ways:
 - **Provisioning AP** — during WiFi setup, the "Advanced" tab in the captive portal exposes a "Custom OTA URL" field saved to NVS
@@ -75,14 +77,14 @@ The OTA URL can be configured in two ways:
 # Activate ESP-IDF toolchain (every new terminal)
 source ~/esp/esp-idf/export.sh
 
-# Build with Sibilla server hardcoded
+# Build with custom server hardcoded
 python3 scripts/build_firmware.py --mode hardcoded
 
 # Or use the web UI (see webui/README.md)
 python3 webui/server.py   # → http://localhost:5001
 ```
 
-For full setup instructions see [SETUP.md](SETUP.md)
+For full setup instructions see [SETUP.md](SETUP.md).
 
 ---
 

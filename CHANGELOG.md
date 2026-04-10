@@ -1,5 +1,12 @@
 # Changelog — my-xiaozhi-esp32 custom
 
+## [session] — 2026-04-10 (docs cleanup)
+### Changed
+- `README.md`: titolo → "My xiaozhi esp32 firmware"; rimossi riferimenti a "Sibilla" → "custom server"; aggiunto link a `SETUP.md` nel primo blocco di testo
+- `SETUP.md`: rimossi riferimenti a "Sibilla" e all'IP hardcoded nella sezione First boot → placeholder generico
+- `CLAUDE.md`: rimossi riferimenti a "Sibilla" fuori dalla sezione "Sibilla — Infrastruttura"
+- `TODO.md`, `CHANGELOG.md`: rimossi riferimenti a "Sibilla"
+
 ## [session] — 2026-04-10
 ### Aggiunto
 - `SETUP.md` con istruzioni di installazione da zero su macOS (ESP-IDF, clone, build, flash, first boot)
@@ -21,7 +28,7 @@
 ## [v2.2.4-custom-0.2] — 2026-04-09
 ### Added
 - Board config `sp-esp32-s3-1.28-box` in `sdkconfig.defaults.esp32s3`
-- Infrastruttura Sibilla documentata in CLAUDE.md
+- Infrastruttura server custom documentata in CLAUDE.md
 
 ### Fixed
 - Build tool ora imposta automaticamente target esp32s3
@@ -30,7 +37,7 @@
 
 ## [v2.2.4-custom-0.1] — 2026-04-09
 ### Added
-- `scripts/build_firmware.py` con modalità hardcoded (Sibilla) e dynamic
+- `scripts/build_firmware.py` con modalità hardcoded e dynamic
 - `scripts/firmware_outputs/` in .gitignore
 - CLAUDE.md: gotcha ESP-IDF 5.5, target S3
 

@@ -170,7 +170,7 @@ idf.py set-target esp32s3
 # Menuconfig (esplora opzioni sdkconfig)
 idf.py menuconfig
 
-# Build firmware con server hardcoded (Sibilla locale)
+# Build firmware con server hardcoded (custom server)
 python3 scripts/build_firmware.py --mode hardcoded
 
 # Build firmware con server dinamico (upstream default)
@@ -182,7 +182,7 @@ python3 scripts/build_firmware.py --mode dynamic
 
 ---
 
-## Session 1 Notes — Mapping Sibilla & Architecture Discovery
+## Session 1 Notes — Architecture & Server Discovery
 
 ### ✅ Architettura xiaozhi-esp32 confermata
 - **Board**: `main/boards/sp-esp32-s3-1.28-box/` esiste già (non va creata)
@@ -202,9 +202,9 @@ python3 scripts/build_firmware.py --mode dynamic
 4. WebSocket protocol legge da NVS e connette
 5. **NVS namespaces**: "websocket" (url, token, version), "wifi" (ota_url), "mqtt" (endpoint, client_id, username, password, publish_topic), "system" (uuid)
 
-### ✅ Sibilla API — Mapping completo
+### ✅ Custom Server API — Mapping completo
 - **OTA endpoint**: `http://192.168.1.69:8003/xiaozhi/ota/` (POST con Device-Id + Client-Id header)
-- **WebSocket endpoint**: `ws://192.168.1.69:8000/xiaozhi/v1/` (inviato da Sibilla in risposta OTA)
+- **WebSocket endpoint**: `ws://192.168.1.69:8000/xiaozhi/v1/` (inviato dal server in risposta OTA)
 - **Risposta OTA JSON**:
 ```json
   {
@@ -227,13 +227,13 @@ python3 scripts/build_firmware.py --mode dynamic
 - **Repo 1 (tuo)** è più avanzato e robusto di Repo 2 (Spotpear wiki)
 - Differenze critiche mappate (GC9A01 registri, partition table, bug fixes)
 - **Conclusione**: Nessuna sincronizzazione da Spotpear necessaria
-- Il fork v2.2.4 è il punto di partenza migliore per Sibilla custom
+- Il fork v2.2.4 è il punto di partenza migliore per il custom server
 - Dettagli: vedere documento di confronto nella sessione precedente
 
 ### ⚠️ Gotcha scoperti
 - NVS key max 15 caratteri (confirmed: "ota_url" = 7, "websocket_url" = 14, OK)
 - Board config JSON è minimalista — logica vera è in config.h + .cc
-- Timezone Sibilla: UTC+8 — verificare sincronizzazione NTP per Italia (device dovrebbe auto-sincronizzarsi via NTP ma timezone offset potrebbe essere obsoleto)
+- Timezone server: UTC+8 — verificare sincronizzazione NTP per Italia (device dovrebbe auto-sincronizzarsi via NTP ma timezone offset potrebbe essere obsoleto)
 - Display offset: attualmente 0,0 in config.h — verificare empiricamente se serve tuning
 
 ---

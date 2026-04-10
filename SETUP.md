@@ -80,7 +80,7 @@ python3 scripts/build_firmware.py --mode hardcoded
 
 What this does:
 - `idf.py set-target esp32s3` — configures the build system for the ESP32-S3 chip (required once per clean build directory)
-- `python3 scripts/build_firmware.py --mode hardcoded` — builds the firmware with the Sibilla server URL compiled in
+- `python3 scripts/build_firmware.py --mode hardcoded` — builds the firmware with the custom server URL compiled in
 
 The compiled firmware will be at `build/xiaozhi.bin`.
 
@@ -130,10 +130,7 @@ On first power-on (or after flashing), the device has no WiFi credentials and en
 1. On your Mac, connect to the WiFi network named `Xiaozhi-XXXX` (no password)
 2. A captive portal should open automatically, or navigate to `http://192.168.4.1`
 3. Select your home WiFi network and enter the password
-4. Open the **Advanced** tab and set the OTA URL:
-   ```
-   http://192.168.1.69:8003/xiaozhi/ota/
-   ```
-5. Save — the device will reboot and connect to your WiFi and Sibilla server
+4. Open the **Advanced** tab and set the OTA URL to your custom server (e.g. `http://YOUR_SERVER_IP:8003/xiaozhi/ota/`)
+5. Save — the device will reboot and connect to your WiFi and your custom server
 
-> **Note**: the OTA URL in the Advanced tab is saved to NVS and overrides the compiled-in default. If you built with `--mode hardcoded`, you can leave this field empty and the Sibilla URL is already in the firmware.
+> **Note**: the OTA URL in the Advanced tab is saved to NVS and overrides the compiled-in default. If you built with `--mode hardcoded`, you can leave this field empty and the custom server URL is already in the firmware.
