@@ -2,7 +2,7 @@
 
 A fork of [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) customised for the **Spotpear ESP32-S3-1.28-BOX**, targeting a self-hosted local server instead of xiaozhi.me.
 
-> For the original xiaozhi-esp32 README see [README_original.md](README_original.md)
+For the original xiaozhi-esp32 README see [README_original.md](README_original.md)
 
 ---
 
@@ -21,10 +21,6 @@ A fork of [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) customised for th
 
 ---
 
-<p align="center">
-  <img src="docs/ceroccas/features.png" width="600" alt="features"/>
-</p>
-
 ## Architecture
 
 The firmware connects to **Sibilla**, a self-hosted local server, for both OTA updates and WebSocket communication. There is no dependency on xiaozhi.me or any external cloud service.
@@ -35,17 +31,28 @@ The OTA URL can be configured in two ways:
 
 ---
 
+## Images
+
+### Features
+<br>
+<p align="center">
+  <img src="docs/ceroccas/features.png" width="600" alt="features"/>
+</p>
+<br>
+
+### Sample screens
+<br>
 <p align="center">
   <img src="docs/ceroccas/screens.png" width="500" alt="screens"/>
 </p>
+<br>
 
-*Sample screens*
-
+### Hardware interface
+<br>
 <p align="center">
   <img src="docs/ceroccas/interface.png" width="500" alt="interface"/>
 </p>
-
-*Hardware interface*
+<br>
 
 ---
 
