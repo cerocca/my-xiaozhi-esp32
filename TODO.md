@@ -9,9 +9,6 @@
 - [x] Display GC9A01 acceso, lingua italiana
 - [x] Connessione a Sibilla verificata end-to-end
 
-## 🔄 In corso
-- [ ] capire i sdkconfig.defaults sulla root del repo se possono essere rimossi
-
 ## ✅ Completato (aggiornamento 2026-04-10)
 - [x] FASE 1: `CONFIG_OTA_URL` — URL default in Kconfig è `tenclass.net` ma viene sovrascritto correttamente da `build_firmware.py --mode hardcoded`. Nessuna modifica necessaria al sorgente.
 - [x] Verificato provisioning WiFi via AP: tab "Advanced" include già campo OTA URL, funzionante, nessuna modifica necessaria
