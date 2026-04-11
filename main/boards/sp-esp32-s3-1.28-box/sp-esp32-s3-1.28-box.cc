@@ -115,16 +115,14 @@ public:
                     bool mirror_y,
                     bool swap_xy)
         : SpiLcdDisplay(io_handle, panel_handle, width, height, offset_x, offset_y, mirror_x, mirror_y, swap_xy) {
-        // Note: UI customization should be done in SetupUI(), not in constructor
-        // to ensure lvgl objects are created before accessing them
+        // LVGL objects (status_bar_, bottom_bar_, etc.) are created in SetupUI(),
+        // which is called externally by Application::Initialize() — not here.
     }
 
     virtual void SetupUI() override {
-        // Call parent SetupUI() first to create all lvgl objects
         SpiLcdDisplay::SetupUI();
-
         DisplayLockGuard lock(this);
-        // 由于屏幕是圆的，所以状态栏需要增加左右内边距
+        // Round screen: restrict status bar to visible chord (LV_HOR_RES * 0.33 per side)
         lv_obj_set_style_pad_left(status_bar_, LV_HOR_RES * 0.33, 0);
         lv_obj_set_style_pad_right(status_bar_, LV_HOR_RES * 0.33, 0);
     }

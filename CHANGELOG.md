@@ -1,5 +1,21 @@
 # Changelog — my-xiaozhi-esp32 custom
 
+## [session] — 2026-04-11
+### Analisi
+- Confronto completo Spotpear original vs fork su tutte le feature hardware
+- SD card: confermata assenza in tutti i firmware ESP-IDF per questa board
+- Pin SD confermati da Arduino demo: CLK=17, CMD=18, D0=21, CS=13
+- IoT Things (Speaker+Screen): presente in Spotpear, assente nel fork
+
+### In corso
+- Display fix: migrazione branch `#else` `lcd_display.cc` al layout Spotpear
+  con `content_` flex column — `chat_message_label_` e `emoji_box_` dentro `content_`,
+  `bottom_bar_` hidden. Testo chat sparito dopo flash, debug necessario.
+
+### Fixed
+- Padding laterale `status_bar_` per schermo rotondo (79px) — confermato funzionante
+- Offset `top_bar_` e `status_bar_` +20px verso il basso — testo boot visibile
+
 ## [session] — 2026-04-10 (docs cleanup)
 ### Changed
 - `README.md`: titolo → "My xiaozhi esp32 firmware"; rimossi riferimenti a "Sibilla" → "custom server"; aggiunto link a `SETUP.md` nel primo blocco di testo

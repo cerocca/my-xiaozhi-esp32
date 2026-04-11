@@ -117,6 +117,18 @@ idf.py -p /dev/cu.usbserial-XXXX monitor
 - **sdkconfig e sdkconfig.old**: già in `.gitignore`, non committare.
   Solo `sdkconfig.defaults` e `sdkconfig.defaults.esp32s3` sono rilevanti
   per questo progetto.
+- **lv_obj_set_y / lv_obj_align su bottom_bar_ non funzionano**:
+  durante SetupUI() LVGL resetta le coordinate al primo layout pass.
+  Workaround: usare layout flex (`content_`) invece di posizionamento manuale.
+- **Layout display branch #else**: in corso migrazione al layout Spotpear
+  con `content_` flex column 240×240. `chat_message_label_` e `emoji_box_`
+  sono figli di `content_`. `bottom_bar_` mantenuto hidden per compatibilità API.
+  Problema aperto: testo chat sparito dopo il flash — debug `SetChatMessage()`
+  necessario nella prossima sessione.
+- **lv_obj_get_y restituisce 0 durante SetupUI()**: LVGL calcola le
+  coordinate in modo lazy — `lv_obj_get_y` può restituire 0 finché non
+  è avvenuto il primo layout pass. Non usare `get_y` per verifiche
+  durante la costruzione dei widget.
 
 ---
 
@@ -235,6 +247,30 @@ python3 scripts/build_firmware.py --mode dynamic
 - Board config JSON è minimalista — logica vera è in config.h + .cc
 - Timezone server: UTC+8 — verificare sincronizzazione NTP per Italia (device dovrebbe auto-sincronizzarsi via NTP ma timezone offset potrebbe essere obsoleto)
 - Display offset: attualmente 0,0 in config.h — verificare empiricamente se serve tuning
+
+---
+
+## Session 2 Notes — Display fix & analisi comparativa
+
+### ✅ Analisi comparativa Spotpear vs fork
+- Fork superiore su: touch CST816D, GC9A01 init, battery/power management,
+  deep sleep, WiFi config mode
+- Spotpear superiore su: IoT Things (Speaker+Screen) — unica feature mancante
+- SD card: assente in tutti i firmware ESP-IDF, solo demo Arduino separato
+  (pin confermati: CLK=17, CMD=18, D0=21, CS=13)
+
+### ✅ Display fix — root cause identificata
+- Spotpear: `chat_message_label_` in `content_` flex al centro (Y≈120, corda 240px)
+- Fork originale: `chat_message_label_` in `bottom_bar_` a Y=208 (corda ~163px)
+- `lv_obj_align` e `lv_obj_set_y` ignorati da LVGL durante SetupUI()
+- Fix applicato: padding laterale `status_bar_` (79px) ✅
+- Fix applicato: offset `top_bar_` e `status_bar_` +20px verso il basso ✅
+- Fix in corso: migrazione a layout `content_` flex — testo sparito, da debuggare
+
+### 🎯 Prossima sessione
+- Debug `SetChatMessage()` con nuovo layout `content_`
+- IoT Things: `InitializeIot()` con `Speaker` + `Screen`
+- SD card SPI
 
 ---
 
