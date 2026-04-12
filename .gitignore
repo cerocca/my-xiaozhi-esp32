@@ -29,3 +29,10 @@ webui/logs/*.pid
 .DS_Store
 .AppleDouble
 .LSOverride
+
+#added reference files 
+firmwares/
+xiaozhi-opzioni.html
+
+.DS_Store
+._*
