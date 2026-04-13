@@ -12,6 +12,20 @@
 - [ ] SD card: implementare su SPI. Pin: CLK=17, CMD=18, D0=21, CS=13. Pattern: `main/boards/xingzhi-abs-2.0/xingzhi-abs-2.0.cc`. Note: assente nel firmware Spotpear originale, solo progetto Arduino separato
 
 ## 🔵 Futuro
+- [ ] **IoT Tools**: il LLM risponde verbalmente senza invocare i tool MCP
+  (volume, luminosità e qualsiasi altro tool).
+  Causa: system prompt su Sibilla non istruisce il modello a usare
+  i tool. Fix: aggiungere istruzioni esplicite nel system prompt
+  del server (web UI Sibilla → Agent/Role → System Prompt).
+  Il firmware è corretto — confermato da log: `DoToolCall` mai chiamato.
+- [ ] **Traduzione documentazione in inglese**:
+  `CLAUDE.md`, `TODO.md`, `CHANGELOG.md`, `SETUP.md` sono in italiano.
+  Valutare se tradurre in inglese per compatibilità con contributori
+  esterni e standard open source.
+- [ ] **Fix orario sballato**: il device mostra orario non sincronizzato.
+  Causa probabile: timezone offset hardcoded nel server (UTC+8 cinese)
+  invece di Europe/Rome (UTC+2). Verificare risposta OTA endpoint
+  (campo `server_time.timezone_offset`) e config NTP sul firmware.
 - [ ] **esp-web-tools**: integra flash via browser nella WebUI.
   Richiede: endpoint `/manifest.json` in `server.py`, web component
   in `index.html`, verifica offset da partition table.

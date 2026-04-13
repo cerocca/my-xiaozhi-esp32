@@ -148,6 +148,19 @@ idf.py -p /dev/cu.usbserial-XXXX monitor
   "congela" la posizione a h=0, rendendo il testo invisibile anche dopo
   `SetChatMessage()`. Usare `" "` (spazio) come testo iniziale garantisce
   `height=line_height` dal primo layout pass.
+- **Debug tool MCP — `DoToolCall` log**: aggiungere
+  `ESP_LOGI(TAG, "DoToolCall: %s", tool_name.c_str())` all'inizio di
+  `McpServer::DoToolCall()` in `mcp_server.cc`. Se non appare nel monitor
+  quando si chiede di cambiare volume/luminosità, il LLM non sta invocando
+  i tool — problema nel system prompt del server, non nel firmware.
+- **`InitializeIot()` — non duplicare tool di `AddCommonTools()`**:
+  registrare in `InitializeIot()` tool con lo stesso nome o la stessa
+  funzione di quelli comuni causa conflitti e confonde il LLM.
+  Tool già disponibili via `AddCommonTools()`:
+  `self.audio_speaker.set_volume`, `self.screen.set_brightness`,
+  `self.screen.set_theme`, `self.get_device_status`.
+  `InitializeIot()` deve contenere solo tool board-specifici non coperti
+  da quelli comuni.
 
 ---
 

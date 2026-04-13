@@ -16,6 +16,19 @@
 - `InitializeIot()` in `sp-esp32-s3-1.28-box.cc` con MCP tools:
   `self.speaker.get_volume`, `self.speaker.set_volume`,
   `self.screen.get_brightness`, `self.screen.set_brightness`
+- `ESP_LOGI(TAG, "DoToolCall: %s")` in `McpServer::DoToolCall()` per debug
+
+### Fixed
+- `InitializeIot()` svuotata: rimossi i 4 tool ridondanti con quelli
+  di `AddCommonTools()` (`self.speaker.set_volume` duplicava
+  `self.audio_speaker.set_volume`; `self.screen.set_brightness` aveva
+  nome identico → dead code con `std::find_if` first-match)
+- `[&board]` dangling reference in `AddCommonTools()` → `[b = &board]`
+
+### In sospeso
+- IoT Tools: tool registrati correttamente ma LLM non li invoca
+  (problema system prompt Sibilla, non firmware)
+- SD card: non implementata, rimandata alla prossima sessione
 
 ## [session] — 2026-04-11 (wake word & esp-web-tools analysis)
 ### Analisi

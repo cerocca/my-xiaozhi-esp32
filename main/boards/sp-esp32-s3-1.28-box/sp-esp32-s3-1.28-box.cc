@@ -369,50 +369,11 @@ private:
     }
 
     void InitializeIot() {
-        auto& mcp_server = McpServer::GetInstance();
-
-        mcp_server.AddTool("self.speaker.get_volume",
-            "Get the speaker output volume (0-100)",
-            PropertyList(),
-            [this](const PropertyList& properties) -> ReturnValue {
-                auto codec = GetAudioCodec();
-                return codec ? codec->output_volume() : 0;
-            });
-
-        mcp_server.AddTool("self.speaker.set_volume",
-            "Set the speaker output volume (0-100)",
-            PropertyList({
-                Property("volume", kPropertyTypeInteger, 0, 100)
-            }),
-            [this](const PropertyList& properties) -> ReturnValue {
-                auto codec = GetAudioCodec();
-                if (!codec) return false;
-                int volume = properties["volume"].value<int>();
-                codec->SetOutputVolume(volume);
-                GetDisplay()->ShowNotification(std::to_string(volume));
-                return true;
-            });
-
-        mcp_server.AddTool("self.screen.get_brightness",
-            "Get the screen backlight brightness (0-100)",
-            PropertyList(),
-            [this](const PropertyList& properties) -> ReturnValue {
-                auto backlight = GetBacklight();
-                return backlight ? (int)backlight->brightness() : 0;
-            });
-
-        mcp_server.AddTool("self.screen.set_brightness",
-            "Set the screen backlight brightness (0-100)",
-            PropertyList({
-                Property("brightness", kPropertyTypeInteger, 0, 100)
-            }),
-            [this](const PropertyList& properties) -> ReturnValue {
-                auto backlight = GetBacklight();
-                if (!backlight) return false;
-                int brightness = properties["brightness"].value<int>();
-                backlight->SetBrightness(static_cast<uint8_t>(brightness), true);
-                return true;
-            });
+        // All volume/brightness tools are handled by McpServer::AddCommonTools():
+        //   self.audio_speaker.set_volume  (volume)
+        //   self.screen.set_brightness     (brightness)
+        //   self.get_device_status         (read-only status including volume & brightness)
+        // No board-specific IoT tools needed at this time.
     }
 
     void InitializeButtons() {
