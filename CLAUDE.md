@@ -120,15 +120,34 @@ idf.py -p /dev/cu.usbserial-XXXX monitor
 - **lv_obj_set_y / lv_obj_align su bottom_bar_ non funzionano**:
   durante SetupUI() LVGL resetta le coordinate al primo layout pass.
   Workaround: usare layout flex (`content_`) invece di posizionamento manuale.
-- **Layout display branch #else**: in corso migrazione al layout Spotpear
-  con `content_` flex column 240×240. `chat_message_label_` e `emoji_box_`
-  sono figli di `content_`. `bottom_bar_` mantenuto hidden per compatibilità API.
-  Problema aperto: testo chat sparito dopo il flash — debug `SetChatMessage()`
-  necessario nella prossima sessione.
 - **lv_obj_get_y restituisce 0 durante SetupUI()**: LVGL calcola le
   coordinate in modo lazy — `lv_obj_get_y` può restituire 0 finché non
   è avvenuto il primo layout pass. Non usare `get_y` per verifiche
   durante la costruzione dei widget.
+- **Display branch attivo per la nostra board: MULTILINE** (non SINGLE/ELSE).
+  `CONFIG_USE_MULTILINE_CHAT_MESSAGE=y` è nel `sdkconfig` generato — persiste
+  tra i build. Il sub-branch `#else` (DEFAULT-SINGLE) non viene mai compilato.
+  Per verificare: aggiungere `ESP_LOGI` all'inizio di ogni branch e flashare.
+- **Bug display fix — root cause**: `bottom_bar_` creato con
+  `lv_obj_add_flag(bottom_bar_, LV_OBJ_FLAG_HIDDEN)` ("hide until content")
+  ma `SetChatMessage()` non lo mostrava mai. Fix: aggiungere
+  `lv_obj_remove_flag(bottom_bar_, LV_OBJ_FLAG_HIDDEN)` prima di
+  `lv_obj_align` nel blocco `#if CONFIG_USE_MULTILINE_CHAT_MESSAGE`.
+- **Display circolare 240×240 — posizionamento bottom_bar_**: a y=196
+  (offset -44px dal bordo) la corda è ~186px > 180px (LV_HOR_RES*0.75).
+  Valori corretti: `lv_obj_set_width(bottom_bar_, LV_HOR_RES * 0.75)` +
+  `lv_obj_align(bottom_bar_, LV_ALIGN_BOTTOM_MID, 0, -44)`.
+  Usare `LV_PCT(100)` per la larghezza di `chat_message_label_` (si adatta al parent).
+- **lv_obj_update_layout() in SetChatMessage() è controproducente**: LVGL
+  ricalcola automaticamente il layout al prossimo render tick quando il testo
+  cambia. Chiamarlo esplicitamente dopo `lv_label_set_text` può eseguire il
+  layout prima che il label abbia ricalcolato le proprie dimensioni — risultato:
+  posizione stale. Non aggiungere chiamate manuali a `lv_obj_update_layout`.
+- **Testo iniziale " " invece di ""**: i label con `LV_LABEL_LONG_WRAP` e
+  testo vuoto `""` possono avere `height=0` al primo flex pass. Il flex engine
+  "congela" la posizione a h=0, rendendo il testo invisibile anche dopo
+  `SetChatMessage()`. Usare `" "` (spazio) come testo iniziale garantisce
+  `height=line_height` dal primo layout pass.
 
 ---
 

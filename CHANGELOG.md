@@ -1,5 +1,32 @@
 # Changelog — my-xiaozhi-esp32 custom
 
+## [session] — 2026-04-13 (display fix)
+### Fixed
+- `lcd_display.cc`: identificato sub-branch `CONFIG_USE_MULTILINE_CHAT_MESSAGE`
+  come branch attivo per la nostra board (non `#else`/DEFAULT-SINGLE)
+- `bottom_bar_` ora mostrato correttamente in `SetChatMessage()`:
+  era creato con `LV_OBJ_FLAG_HIDDEN` e mai reso visibile
+- `bottom_bar_` riposizionato per display circolare 240×240:
+  width `LV_HOR_RES * 0.75` (180px), align `BOTTOM_MID` offset `-44px`
+- `chat_message_label_` width cambiato a `LV_PCT(100)` (relativo al parent)
+- Rimosso `lv_obj_update_layout()` prematuro da `SetChatMessage()`
+- Testo iniziale `" "` invece di `""` per garantire `height=line_height`
+  al primo flex pass
+### Added
+- `InitializeIot()` in `sp-esp32-s3-1.28-box.cc` con MCP tools:
+  `self.speaker.get_volume`, `self.speaker.set_volume`,
+  `self.screen.get_brightness`, `self.screen.set_brightness`
+
+## [session] — 2026-04-11 (wake word & esp-web-tools analysis)
+### Analisi
+- Wake word attiva: "Nihao Xiaozhi" (`CONFIG_SR_WN_WN9_NIHAOXIAOZHI_TTS=y`)
+- Disponibili senza training: Hi ESP, Alexa, Jarvis, Sophia,
+  Hey Willow, Mycroft, Computer, Hi M5, Hey Wanda + ~20 varianti cinesi
+- Nessuna wake word italiana nel catalogo Espressif
+- Wake word custom possibile via piattaforma Espressif (training richiesto)
+- esp-web-tools (esphome/esp-web-tools): fattibile nella WebUI,
+  limiti: solo Chrome/Edge, solo localhost senza HTTPS
+
 ## [session] — 2026-04-11
 ### Analisi
 - Confronto completo Spotpear original vs fork su tutte le feature hardware

@@ -357,7 +357,7 @@ void LcdDisplay::SetupUI() {
         ESP_LOGW(TAG, "SetupUI() called multiple times, skipping duplicate call");
         return;
     }
-    
+
     Display::SetupUI();  // Mark SetupUI as called
     DisplayLockGuard lock(this);
 
@@ -807,7 +807,7 @@ void LcdDisplay::SetupUI() {
         ESP_LOGW(TAG, "SetupUI() called multiple times, skipping duplicate call");
         return;
     }
-    
+
     Display::SetupUI();  // Mark SetupUI as called
     DisplayLockGuard lock(this);
     LvglTheme* lvgl_theme = static_cast<LvglTheme*>(current_theme_);
@@ -820,7 +820,7 @@ void LcdDisplay::SetupUI() {
     lv_obj_set_style_text_color(screen, lvgl_theme->text_color(), 0);
     lv_obj_set_style_bg_color(screen, lvgl_theme->background_color(), 0);
 
-    /* Container - used as background */
+    /* Container - flex column, fills screen, stacks content_ below status overlays */
     container_ = lv_obj_create(screen);
     lv_obj_set_size(container_, LV_HOR_RES, LV_VER_RES);
     lv_obj_set_style_radius(container_, 0, 0);
@@ -828,17 +828,20 @@ void LcdDisplay::SetupUI() {
     lv_obj_set_style_border_width(container_, 0, 0);
     lv_obj_set_style_bg_color(container_, lvgl_theme->background_color(), 0);
     lv_obj_set_style_border_color(container_, lvgl_theme->border_color(), 0);
+    lv_obj_set_flex_flow(container_, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_style_pad_row(container_, 0, 0);
 
-    /* Content area: full-screen transparent overlay, flex column, items centered and evenly spaced */
-    content_ = lv_obj_create(screen);
-    lv_obj_set_size(content_, LV_HOR_RES, LV_VER_RES);
+    /* Content area: flex child of container_, grows to fill remaining space */
+    content_ = lv_obj_create(container_);
+    lv_obj_set_size(content_, LV_HOR_RES, 0);
+    lv_obj_set_flex_grow(content_, 1);
     lv_obj_set_style_bg_opa(content_, LV_OPA_TRANSP, 0);
     lv_obj_set_style_pad_all(content_, 0, 0);
     lv_obj_set_style_border_width(content_, 0, 0);
     lv_obj_set_scrollbar_mode(content_, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_remove_flag(content_, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_flex_flow(content_, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_flex_align(content_, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_SPACE_EVENLY);
-    lv_obj_align(content_, LV_ALIGN_CENTER, 0, 0);
 
     /* emoji_box_ inside content_ — centered flex item */
     emoji_box_ = lv_obj_create(content_);
@@ -936,8 +939,10 @@ void LcdDisplay::SetupUI() {
 
 #if CONFIG_USE_MULTILINE_CHAT_MESSAGE
     /* Bottom bar - auto height, grows upward with wrapped text */
+    // Round display: bottom_bar_ must fit within the circular viewport.
+    // At y=196 (44px from bottom), the chord width ~186px > 75% of 240 = 180px — safe.
     bottom_bar_ = lv_obj_create(screen);
-    lv_obj_set_width(bottom_bar_, LV_HOR_RES);
+    lv_obj_set_width(bottom_bar_, LV_HOR_RES * 0.75);
     lv_obj_set_height(bottom_bar_, LV_SIZE_CONTENT);
     lv_obj_set_style_radius(bottom_bar_, 0, 0);
     lv_obj_set_style_bg_color(bottom_bar_, lvgl_theme->background_color(), 0);
@@ -946,12 +951,12 @@ void LcdDisplay::SetupUI() {
     lv_obj_set_style_pad_all(bottom_bar_, lvgl_theme->spacing(4), 0);
     lv_obj_set_style_border_width(bottom_bar_, 0, 0);
     lv_obj_set_scrollbar_mode(bottom_bar_, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_align(bottom_bar_, LV_ALIGN_BOTTOM_MID, 0, 0);
+    lv_obj_align(bottom_bar_, LV_ALIGN_BOTTOM_MID, 0, -44);
 
     /* chat_message_label_ placed in bottom_bar_, multiline wrapped display */
     chat_message_label_ = lv_label_create(bottom_bar_);
-    lv_label_set_text(chat_message_label_, "");
-    lv_obj_set_width(chat_message_label_, LV_HOR_RES - lvgl_theme->spacing(8));
+    lv_label_set_text(chat_message_label_, " ");
+    lv_obj_set_width(chat_message_label_, LV_PCT(100));
     lv_label_set_long_mode(chat_message_label_, LV_LABEL_LONG_WRAP);
     lv_obj_set_style_text_align(chat_message_label_, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_set_style_text_color(chat_message_label_, lvgl_theme->text_color(), 0);
@@ -960,7 +965,7 @@ void LcdDisplay::SetupUI() {
 #else
     /* chat_message_label_ inside content_, wrapped, centered — Spotpear layout */
     chat_message_label_ = lv_label_create(content_);
-    lv_label_set_text(chat_message_label_, "");
+    lv_label_set_text(chat_message_label_, " ");
     lv_obj_set_width(chat_message_label_, LV_HOR_RES * 0.9);
     lv_label_set_long_mode(chat_message_label_, LV_LABEL_LONG_WRAP);
     lv_obj_set_style_text_align(chat_message_label_, LV_TEXT_ALIGN_CENTER, 0);
@@ -1038,10 +1043,11 @@ void LcdDisplay::SetChatMessage(const char* role, const char* content) {
     }
     lv_label_set_text(chat_message_label_, content);
 #if CONFIG_USE_MULTILINE_CHAT_MESSAGE
-    // Re-align bottom_bar_ after text change so it stays anchored to the bottom
-    // as its height adapts to the wrapped content.
+    // Show bottom_bar_ (hidden at boot until first message arrives),
+    // then re-align so it stays anchored to the bottom as height adapts.
     if (bottom_bar_ != nullptr) {
-        lv_obj_align(bottom_bar_, LV_ALIGN_BOTTOM_MID, 0, 0);
+        lv_obj_remove_flag(bottom_bar_, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_align(bottom_bar_, LV_ALIGN_BOTTOM_MID, 0, -44);
     }
 #endif
 }
