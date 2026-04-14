@@ -10,6 +10,17 @@ See [SETUP.md](SETUP.md) for full installation instructions.
 
 ---
 
+## Implemented functionalities
+
+- **Hardcoded local server support**: build-time option to compile the custom server URL directly into the firmware (`scripts/build_firmware.py --mode hardcoded`), with NVS override at runtime via the provisioning AP
+- **Self-hosted server**: connects to a local server instead of xiaozhi.me — no dependency on external cloud services
+- **Spotpear ESP32-S3-1.28-BOX specific fixes**: correct GC9A01 init registers, circular display layout tuned for 240×240 round screen
+- **SD card support**: SPI mount on dedicated bus (SPI2_HOST), pins CLK=17, MOSI=18, MISO=21, CS=13
+- **Correct timezone handling**: device manages its own timezone via POSIX TZ string (CET/CEST for Italy) — ignores the UTC+8 offset sent by the server
+- **Custom locale**: build-time language selection (Italian enabled by default)
+
+---
+
 <p align="center">
   <img src="docs/ceroccas/device.png" width="400" alt="device"/>
 </p>
