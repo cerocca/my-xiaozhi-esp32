@@ -1,5 +1,7 @@
 # My xiaozhi esp32 firmware
 
+![ESP-IDF](https://img.shields.io/badge/ESP--IDF-v5.5.2-blue) ![target](https://img.shields.io/badge/target-ESP32--S3-blue) [![based on](https://img.shields.io/badge/based%20on-xiaozhi--esp32-grey)](https://github.com/78/xiaozhi-esp32) ![license](https://img.shields.io/badge/license-MIT-green) ![status](https://img.shields.io/badge/status-active-brightgreen)
+
 A fork of [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) customised for the **Spotpear ESP32-S3-1.28-BOX**, targeting a custom server instead of xiaozhi.me.
 
 For the original xiaozhi-esp32 README see [README_original.md](README_original.md)

@@ -9,7 +9,5 @@
 - [ ] **Wake word**: change from "Nihao Xiaozhi" to a more suitable wake word
   (e.g. "Sophia" `CONFIG_SR_WN_WN9_SOPHIA_TTS=y`).
   Change: 1 line in `sdkconfig.defaults.esp32s3` + `rm sdkconfig` + rebuild.
-- [ ] **IoT Things**: `InitializeIot()` with `CreateThing("Speaker")` and
-  `CreateThing("Screen")` in `sp-esp32-s3-1.28-box.cc`
 - [ ] GitHub Actions: cloud build from WebUI → download compiled binaries
 - [ ] Repo cleanup: remove unused original docs and sdkconfig.defaults for irrelevant targets (esp32, esp32c3, esp32c5, esp32c6, esp32p4)
