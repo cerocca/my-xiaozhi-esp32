@@ -107,10 +107,13 @@ idf.py -p /dev/cu.usbserial-XXXX monitor
 - **WebUI — porta 5001**: la WebUI Flask gira su porta 5001 (non 5000,
   occupata da AirPlay Receiver su Mac). Script: `webui/Start WebUI.command`,
   `webui/Stop WebUI.command`, `webui/Status WebUI.command`.
-- **SD card — pin noti, non implementata**: slot SD fisico presente sulla
-  board. Pin da Arduino Spotpear: CLK=17, CMD=18, D0=21, CS=13. Pattern
-  ESP-IDF disponibile in `main/boards/xingzhi-abs-2.0/`. Non implementata
-  nel firmware xiaozhi originale per questa board.
+- **SD card — implementata su SPI2_HOST**: slot SD fisico presente sulla
+  board. Pin da Arduino Spotpear: CLK=17, CMD=18, D0=21, CS=13.
+  Bus SPI2_HOST (display usa SPI3_HOST — bus separati).
+  Defines in `config.h`, logica in `InitializeSDcardSpi()` del board file.
+  Mount point `/sdcard`, `format_if_mount_failed = false`.
+  Fallimento graceful: `is_sdcard_found_ = false`, device continua normalmente.
+  Nessuna modifica a CMakeLists.txt necessaria (`fatfs` porta `sdmmc` transitivamente).
 - **Contributors GitHub**: il repo eredita tutti i contributor del repo
   upstream 78/xiaozhi-esp32. Claude Code firma i commit con le credenziali
   git locali dell'utente, non con identità propria.
@@ -174,6 +177,17 @@ idf.py -p /dev/cu.usbserial-XXXX monitor
 - **`InitializeIot()` per Spotpear S3 1.28 — lasciare vuota**: tutti i tool
   utili (volume, luminosità, status, tema) sono già esposti da `AddCommonTools()`.
   Non aggiungere nulla in `InitializeIot()` per questa board.
+- **Timezone — fix UTC+8 → Italia**: il server OTA ritorna `server_time.timezone_offset: 480`
+  (UTC+8 cinese). La logica originale in `ota.cc` aggiungeva questo offset al timestamp
+  prima di `settimeofday`, impostando il clock di sistema all'ora di Pechino.
+  Fix: ignorare `timezone_offset` dal server, impostare il clock a UTC puro,
+  aggiungere `setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1); tzset();`
+  per gestire DST italiano automaticamente via libc. `localtime()` nel display
+  converte correttamente UTC → ora locale italiana.
+- **`source ~/esp/esp-idf/export.sh` con pipe perde PATH**: se si usa
+  `source ... | tail -N && python3 ...`, il `source` gira in una subshell
+  (a sinistra del pipe) e le modifiche a PATH si perdono. Usare invece:
+  `zsh -c 'source ~/esp/esp-idf/export.sh > /dev/null 2>&1 && python3 ...'`
 
 ---
 

@@ -1,5 +1,23 @@
 # Changelog — my-xiaozhi-esp32 custom
 
+## [session] — 2026-04-14 (SD card + timezone fix)
+### Added
+- SD card SPI support in `sp-esp32-s3-1.28-box.cc`:
+  `InitializeSDcardSpi()` su SPI2_HOST (display su SPI3_HOST — bus separati).
+  Pin: CLK=GPIO17, MOSI=GPIO18, MISO=GPIO21, CS=GPIO13.
+  Mount point `/sdcard`, `format_if_mount_failed = false`.
+  Stato salvato in `is_sdcard_found_`, mount failure graceful.
+- Defines SD card aggiunti in `config.h`:
+  `SD_DATA0`, `SD_CLK`, `SD_CMD`, `SD_CS`, `SD_MOUNT_POINT`, `SD_SPI_HOST`.
+
+### Fixed
+- `ota.cc`: orario del device non più impostato all'ora di Pechino.
+  Root cause: il codice aggiungeva `timezone_offset: 480` (UTC+8) al timestamp UTC
+  prima di `settimeofday`, spostando il clock di 8 ore in avanti.
+  Fix: clock impostato a UTC puro + `setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1)`
+  per gestire CET/CEST (DST Italia) automaticamente via libc.
+  `localtime()` nel display converte ora UTC → ora italiana con DST corretto.
+
 ## [session] — 2026-04-13 (display fix)
 ### Fixed
 - `lcd_display.cc`: identificato sub-branch `CONFIG_USE_MULTILINE_CHAT_MESSAGE`

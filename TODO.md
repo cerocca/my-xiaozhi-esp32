@@ -9,7 +9,7 @@
 
 - [ ] Volume: aggiungere handler nella board (`sp-esp32-s3-1.28-box.cc`). Pattern: `main/boards/magiclick-2p5/magiclick_2p5_board.cc`
 - [ ] Power button: mappare secondo pulsante fisico nella board. Pattern: `doit-s3-aibox.cc`
-- [ ] SD card: implementare su SPI. Pin: CLK=17, CMD=18, D0=21, CS=13. Pattern: `main/boards/xingzhi-abs-2.0/xingzhi-abs-2.0.cc`. Note: assente nel firmware Spotpear originale, solo progetto Arduino separato
+- [x] SD card: implementata su SPI2_HOST. Pin: CLK=17, CMD=18, D0=21, CS=13. Mount point `/sdcard`. Fallimento graceful. ✅
 
 ## 🔵 Futuro
 - [ ] **IoT Tools**: il LLM risponde verbalmente senza invocare i tool MCP
@@ -22,10 +22,9 @@
   `CLAUDE.md`, `TODO.md`, `CHANGELOG.md`, `SETUP.md` sono in italiano.
   Valutare se tradurre in inglese per compatibilità con contributori
   esterni e standard open source.
-- [ ] **Fix orario sballato**: il device mostra orario non sincronizzato.
-  Causa probabile: timezone offset hardcoded nel server (UTC+8 cinese)
-  invece di Europe/Rome (UTC+2). Verificare risposta OTA endpoint
-  (campo `server_time.timezone_offset`) e config NTP sul firmware.
+- [x] **Fix orario sballato**: `ota.cc` ignorava il `timezone_offset` del server (UTC+8)
+  aggiungendolo al timestamp UTC → clock impostato all'ora di Pechino.
+  Fix: clock impostato a UTC puro + `setenv("TZ", "CET-1CEST,...")` per DST italiano automatico. ✅
 - [ ] **esp-web-tools**: integra flash via browser nella WebUI.
   Richiede: endpoint `/manifest.json` in `server.py`, web component
   in `index.html`, verifica offset da partition table.

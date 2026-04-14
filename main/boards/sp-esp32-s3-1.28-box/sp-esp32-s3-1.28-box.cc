@@ -27,6 +27,9 @@
 #include "freertos/task.h"
 #include "power_manager.h"
 #include "mcp_server.h"
+#include <esp_vfs_fat.h>
+#include <driver/sdspi_host.h>
+#include "esp_private/sdmmc_common.h"
 
 #define TAG "Spotpear_ESP32_S3_1_28_BOX"
 
@@ -141,6 +144,7 @@ private:
     PowerSaveTimer* power_save_timer_ = nullptr;
     esp_lcd_panel_handle_t panel_ = nullptr;
     PowerManager* power_manager_ = nullptr;
+    bool is_sdcard_found_ = false;
 
     void InitializePowerSaveTimer() {
         rtc_gpio_init(GPIO_NUM_3);
@@ -368,6 +372,48 @@ private:
 
     }
 
+    void InitializeSDcardSpi() {
+        ESP_LOGI(TAG, "Initialize SD card SPI");
+        spi_bus_config_t bus_cfg = {
+            .mosi_io_num = SD_CMD,
+            .miso_io_num = SD_DATA0,
+            .sclk_io_num = SD_CLK,
+            .quadwp_io_num = -1,
+            .quadhd_io_num = -1,
+            .max_transfer_sz = 400000,
+        };
+        esp_err_t err = spi_bus_initialize(SD_SPI_HOST, &bus_cfg, SPI_DMA_CH_AUTO);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "SD SPI bus init failed: %s", esp_err_to_name(err));
+            return;
+        }
+
+        sdspi_device_config_t slot_cfg = {
+            .host_id = SD_SPI_HOST,
+            .gpio_cs = SD_CS,
+            .gpio_cd = SDSPI_SLOT_NO_CD,
+            .gpio_wp = GPIO_NUM_NC,
+            .gpio_int = GPIO_NUM_NC,
+        };
+
+        esp_vfs_fat_sdmmc_mount_config_t mount_cfg = {
+            .format_if_mount_failed = false,
+            .max_files = 5,
+            .allocation_unit_size = 16 * 1024,
+        };
+
+        sdmmc_card_t* card = nullptr;
+        sdmmc_host_t host = SDSPI_HOST_DEFAULT();
+        err = esp_vfs_fat_sdspi_mount(SD_MOUNT_POINT, &host, &slot_cfg, &mount_cfg, &card);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "SD card mount failed: %s", esp_err_to_name(err));
+            is_sdcard_found_ = false;
+            return;
+        }
+        ESP_LOGI(TAG, "SD card mounted at %s", SD_MOUNT_POINT);
+        is_sdcard_found_ = true;
+    }
+
     void InitializeIot() {
         // All volume/brightness tools are handled by McpServer::AddCommonTools():
         //   self.audio_speaker.set_volume  (volume)
@@ -400,6 +446,7 @@ public:
         // 显示相关先建立起来
         InitializeSpi();
         InitializeGc9a01Display();
+        InitializeSDcardSpi();
         InitializeButtons();
         InitializeIot();
         if (GetBacklight()) {

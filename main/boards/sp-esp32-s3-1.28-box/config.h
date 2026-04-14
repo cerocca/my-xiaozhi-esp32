@@ -53,4 +53,12 @@
 #define BATTERY_ADC_PIN         GPIO_NUM_1  // 电池电压检测ADC引脚
 #define BATTERY_CHARGING_PIN    GPIO_NUM_41 // 充电状态检测引脚
 
+// SD card (SPI)
+#define SD_DATA0        GPIO_NUM_21   // MISO
+#define SD_CLK          GPIO_NUM_17   // SCLK
+#define SD_CMD          GPIO_NUM_18   // MOSI
+#define SD_CS           GPIO_NUM_13   // CS
+#define SD_MOUNT_POINT  "/sdcard"
+#define SD_SPI_HOST     SPI2_HOST
+
 #endif // _BOARD_CONFIG_H_
