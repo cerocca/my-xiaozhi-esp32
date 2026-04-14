@@ -333,6 +333,29 @@ python3 scripts/build_firmware.py --mode dynamic
 
 ---
 
+## Feature analysis — Display modes & Button 2
+
+- **Standby screen**: `PowerSaveTimer` (60s idle, 290s shutdown) chiama
+  `SetPowerSaveMode(true)` → emoji dormiente. Nessun clock face o wallpaper
+  dedicato — da costruire se necessario.
+- **GIF playback**: infrastruttura completa già presente. `LcdDisplay` ha
+  `std::unique_ptr<LvglGif> gif_controller_` (`lcd_display.h:32`). Decoder
+  custom **gifdec** (NON LVGL nativo — `CONFIG_LV_USE_GIF` disabilitato) in
+  `main/display/lvgl_display/gif/`. Già usato da `otto-robot` e `electron-bot`.
+  File GIF da mettere su SD card e puntare via path.
+- **Button 2**: non mappato sulla nostra board. Pattern da seguire:
+  `doit-s3-aibox.cc` — aggiungere `Button` come member + callbacks
+  `OnClick()` / `OnDoubleClick()` / `OnLongPress()`.
+- **Wallpaper/slideshow switch**: non esiste in nessun codebase — da costruire
+  ex novo. Solo riferimento: esempio Arduino JPEGDEC in TEMP_spotpear
+  (`spotpear_SDcard/Arduino/libraries/JPEGDEC/examples/ILI9431_t3_slideshow/`),
+  non integrabile direttamente nel firmware ESP-IDF.
+- **TEMP_spotpear**: nessuna feature utile mancante rispetto al nostro fork.
+  `spotpear_original` usa gli stessi pattern (PowerSaveTimer, Button class,
+  no GIF) — nessuna sincronizzazione necessaria.
+
+---
+
 ## Pre-commit checklist
 
 - [ ] **CLAUDE.md** aggiornato con learnings della sessione ← sempre primo

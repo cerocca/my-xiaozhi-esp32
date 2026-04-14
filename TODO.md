@@ -1,5 +1,14 @@
 # TODO — my-xiaozhi-esp32
 
+## 🔵 Backlog
+
+### Display modes & Button 2
+- [ ] Button 2 mapping — follow `doit-s3-aibox.cc` pattern (`OnClick`/`OnDoubleClick`/`OnLongPress`)
+- [ ] GIF standby screen — replace sleeping emoji with GIF from SD card
+      (`gif_controller_` already in `LcdDisplay`, gifdec decoder available)
+- [ ] Wallpaper/slideshow switch — build from scratch, no existing base
+- [ ] SD card read test — verify real file read after mount
+
 ## 🔵 Future
 - [ ] **esp-web-tools**: integrate browser-based flashing into the WebUI.
   Requires: `/manifest.json` endpoint in `server.py`, web component
