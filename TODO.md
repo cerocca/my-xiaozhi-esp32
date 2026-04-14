@@ -1,39 +1,26 @@
 # TODO — my-xiaozhi-esp32
 
-## 🔴 In corso
-
-- [x] **Display fix** — testo chat visibile su display circolare ✅
-
 ## 🔧 Ongoing — Hardware
-(solo analisi e implementazione futura, no action immediata)
+(analysis and future implementation only, no immediate action)
 
-- [ ] Volume: aggiungere handler nella board (`sp-esp32-s3-1.28-box.cc`). Pattern: `main/boards/magiclick-2p5/magiclick_2p5_board.cc`
-- [ ] Power button: mappare secondo pulsante fisico nella board. Pattern: `doit-s3-aibox.cc`
-- [x] SD card: implementata su SPI2_HOST. Pin: CLK=17, CMD=18, D0=21, CS=13. Mount point `/sdcard`. Fallimento graceful. ✅
+- [ ] Volume: add handler in the board file (`sp-esp32-s3-1.28-box.cc`). Pattern: `main/boards/magiclick-2p5/magiclick_2p5_board.cc`
 
-## 🔵 Futuro
-- [ ] **IoT Tools**: il LLM risponde verbalmente senza invocare i tool MCP
-  (volume, luminosità e qualsiasi altro tool).
-  Causa: problema lato server — il device espone correttamente i tool via MCP
-  (confermato da log: `tools/list` ricevuto, `GetToolsList` invia 11 tool
-  incluso `self.audio_speaker.set_volume`) ma il LLM non li invoca.
-  `DoToolCall` mai chiamato → fix in corso lato server.
-- [ ] **Traduzione documentazione in inglese**:
-  `CLAUDE.md`, `TODO.md`, `CHANGELOG.md`, `SETUP.md` sono in italiano.
-  Valutare se tradurre in inglese per compatibilità con contributori
-  esterni e standard open source.
-- [x] **Fix orario sballato**: `ota.cc` ignorava il `timezone_offset` del server (UTC+8)
-  aggiungendolo al timestamp UTC → clock impostato all'ora di Pechino.
-  Fix: clock impostato a UTC puro + `setenv("TZ", "CET-1CEST,...")` per DST italiano automatico. ✅
-- [ ] **esp-web-tools**: integra flash via browser nella WebUI.
-  Richiede: endpoint `/manifest.json` in `server.py`, web component
-  in `index.html`, verifica offset da partition table.
-  Limite: solo localhost (non LAN) senza HTTPS.
-  Stima: 2-3 ore.
-- [ ] **Wake word**: cambiare da "Nihao Xiaozhi" a wake word
-  più adatta (es. "Sophia" `CONFIG_SR_WN_WN9_SOPHIA_TTS=y`).
-  Modifica: 1 riga in `sdkconfig.defaults.esp32s3` + `rm sdkconfig` + rebuild.
-- [ ] **IoT Things**: `InitializeIot()` con `CreateThing("Speaker")` e
+## 🔵 Future
+- [ ] **IoT Tools**: the LLM responds verbally without invoking MCP tools
+  (volume, brightness, and any other tool).
+  Cause: server-side issue — the device correctly exposes tools via MCP
+  (confirmed by logs: `tools/list` received, `GetToolsList` sends 11 tools
+  including `self.audio_speaker.set_volume`) but the LLM does not invoke them.
+  `DoToolCall` never called → fix in progress on the server side.
+- [ ] **esp-web-tools**: integrate browser-based flashing into the WebUI.
+  Requires: `/manifest.json` endpoint in `server.py`, web component
+  in `index.html`, verify offsets from partition table.
+  Limitation: localhost only (not LAN) without HTTPS.
+  Estimate: 2-3 hours.
+- [ ] **Wake word**: change from "Nihao Xiaozhi" to a more suitable wake word
+  (e.g. "Sophia" `CONFIG_SR_WN_WN9_SOPHIA_TTS=y`).
+  Change: 1 line in `sdkconfig.defaults.esp32s3` + `rm sdkconfig` + rebuild.
+- [ ] **IoT Things**: `InitializeIot()` with `CreateThing("Speaker")` and
   `CreateThing("Screen")` in `sp-esp32-s3-1.28-box.cc`
-- [ ] GitHub Actions: build in cloud da WebUI → download binari compilati
-- [ ] Cleanup repo: rimuovere docs originali non più usati e sdkconfig.defaults per target non rilevanti (esp32, esp32c3, esp32c5, esp32c6, esp32p4)
+- [ ] GitHub Actions: cloud build from WebUI → download compiled binaries
+- [ ] Repo cleanup: remove unused original docs and sdkconfig.defaults for irrelevant targets (esp32, esp32c3, esp32c5, esp32c6, esp32p4)
