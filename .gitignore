@@ -26,6 +26,8 @@ scripts/firmware_outputs/
 webui/logs/*.log
 webui/logs/*.pid
 .claude/
+# Local AI context
+CLAUDE.md
 .DS_Store
 .AppleDouble
 .LSOverride
