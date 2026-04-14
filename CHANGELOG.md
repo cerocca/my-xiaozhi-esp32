@@ -25,9 +25,17 @@
   nome identico → dead code con `std::find_if` first-match)
 - `[&board]` dangling reference in `AddCommonTools()` → `[b = &board]`
 
+### Debug MCP tools
+- Confermato che il device espone correttamente i tool al server via MCP:
+  `tools/list` ricevuto, `GetToolsList` invia 11 tool tra cui
+  `self.audio_speaker.set_volume` e `self.screen.set_brightness`
+- `DoToolCall` mai chiamato → problema lato server/LLM, non firmware
+- Aggiunti log diagnostici temporanei in `ParseMessage()` e `GetToolsList()`
+  per future sessioni di debug (pattern documentato in CLAUDE.md)
+
 ### In sospeso
-- IoT Tools: tool registrati correttamente ma LLM non li invoca
-  (problema system prompt Sibilla, non firmware)
+- IoT Tools: tool esposti correttamente dal device, LLM non li invoca
+  (problema lato server, non firmware)
 - SD card: non implementata, rimandata alla prossima sessione
 
 ## [session] — 2026-04-11 (wake word & esp-web-tools analysis)

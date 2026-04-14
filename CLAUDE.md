@@ -153,6 +153,16 @@ idf.py -p /dev/cu.usbserial-XXXX monitor
   `McpServer::DoToolCall()` in `mcp_server.cc`. Se non appare nel monitor
   quando si chiede di cambiare volume/luminosità, il LLM non sta invocando
   i tool — problema nel system prompt del server, non nel firmware.
+- **Debug tool MCP — `ParseMessage` log**: aggiungere
+  `ESP_LOGI(TAG, "ParseMessage: method=%s", method->valuestring)` in
+  `McpServer::ParseMessage()` dopo aver estratto `method_str`. Permette
+  di verificare se il server invia `initialize` e `tools/list` dopo l'hello.
+  Se nessun messaggio appare → il server non avvia l'handshake MCP.
+- **Debug tool MCP — `GetToolsList` log**: aggiungere in `GetToolsList()`
+  prima del loop: `ESP_LOGI(TAG, "GetToolsList: total=%d", (int)tools_.size())`
+  e per ogni tool `ESP_LOGI(TAG, "GetToolsList: tool=%s", t->name().c_str())`.
+  Se `tools/list` arriva e `GetToolsList` mostra tool corretti ma
+  `DoToolCall` non appare mai → il problema è lato server/LLM, non firmware.
 - **`InitializeIot()` — non duplicare tool di `AddCommonTools()`**:
   registrare in `InitializeIot()` tool con lo stesso nome o la stessa
   funzione di quelli comuni causa conflitti e confonde il LLM.
@@ -161,6 +171,9 @@ idf.py -p /dev/cu.usbserial-XXXX monitor
   `self.screen.set_theme`, `self.get_device_status`.
   `InitializeIot()` deve contenere solo tool board-specifici non coperti
   da quelli comuni.
+- **`InitializeIot()` per Spotpear S3 1.28 — lasciare vuota**: tutti i tool
+  utili (volume, luminosità, status, tema) sono già esposti da `AddCommonTools()`.
+  Non aggiungere nulla in `InitializeIot()` per questa board.
 
 ---
 

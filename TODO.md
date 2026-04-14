@@ -14,10 +14,10 @@
 ## 🔵 Futuro
 - [ ] **IoT Tools**: il LLM risponde verbalmente senza invocare i tool MCP
   (volume, luminosità e qualsiasi altro tool).
-  Causa: system prompt su Sibilla non istruisce il modello a usare
-  i tool. Fix: aggiungere istruzioni esplicite nel system prompt
-  del server (web UI Sibilla → Agent/Role → System Prompt).
-  Il firmware è corretto — confermato da log: `DoToolCall` mai chiamato.
+  Causa: problema lato server — il device espone correttamente i tool via MCP
+  (confermato da log: `tools/list` ricevuto, `GetToolsList` invia 11 tool
+  incluso `self.audio_speaker.set_volume`) ma il LLM non li invoca.
+  `DoToolCall` mai chiamato → fix in corso lato server.
 - [ ] **Traduzione documentazione in inglese**:
   `CLAUDE.md`, `TODO.md`, `CHANGELOG.md`, `SETUP.md` sono in italiano.
   Valutare se tradurre in inglese per compatibilità con contributori
