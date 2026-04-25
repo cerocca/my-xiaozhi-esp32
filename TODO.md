@@ -2,6 +2,14 @@
 
 ## 🔵 Backlog
 
+### Upstream sync — fix pendenti
+- [ ] Cherry-pick GPIO_NUM_NC crash fix (commit `280b2ff`) —
+      verificare prima se `LAMP_GPIO` o `BUILTIN_LED_GPIO = GPIO_NUM_NC`
+      nella config Spotpear (`main/boards/spotpear-esp32s3-lcd-1_54/config.h`)
+- [ ] Aggiornamento dipendenze upstream: `esp_codec_dev ~1.5.6`, `lvgl ~9.5.0` —
+      sessione dedicata; verificare compatibilità con `lcd_display.cc` custom
+      (Spotpear flex layout, round display path) prima di procedere
+
 ### Display modes & Button 2
 - [ ] Button 2 mapping — follow `doit-s3-aibox.cc` pattern (`OnClick`/`OnDoubleClick`/`OnLongPress`)
 - [ ] GIF standby screen — replace sleeping emoji with GIF from SD card
